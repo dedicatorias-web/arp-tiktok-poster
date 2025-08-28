@@ -26,4 +26,4 @@ jobs:
 
       # 4. Publica o vídeo usando a biblioteca e o cookie
       - name: Publicar no TikTok
-        run: tiktok-uploader -v video_teste.mp4 -d "Meu primeiro vídeo postado via GitHub Actions! 🤖 #automação #github" --cookies "${{ secrets.TIKTOK_COOKIE }}"
+        run: tiktok-uploader -v video_teste.mp4 -d "Meu primeiro vídeo postado via GitHub Actions! 🤖" --cookies "${{ secrets.TIKTOK_COOKIE }}"
