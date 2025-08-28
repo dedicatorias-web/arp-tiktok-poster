@@ -1,0 +1,29 @@
+# Nome do workflow
+name: Publicar Video no TikTok (com Biblioteca)
+
+# Acionador manual
+on:
+  workflow_dispatch:
+
+jobs:
+  upload-video:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Baixa o código e os vídeos do seu repositório
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      # 2. Configura o ambiente Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      # 3. Instala a biblioteca tiktok-uploader
+      - name: Instalar tiktok-uploader
+        run: pip install tiktok-uploader
+
+      # 4. Publica o vídeo usando a biblioteca e o cookie
+      - name: Publicar no TikTok
+        run: tiktok-uploader -v video_teste.mp4 -d "Meu primeiro vídeo postado via GitHub Actions! 🤖 #automação #github" --cookies "${{ secrets.TIKTOK_COOKIE }}"
