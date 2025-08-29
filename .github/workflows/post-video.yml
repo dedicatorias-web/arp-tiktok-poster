@@ -1,29 +1,42 @@
-# Nome do workflow
-name: Publicar Video no TikTok (com Biblioteca)
+# Nome do workflow que aparecerá na aba "Actions" do GitHub
+name: Publicar Video no TikTok
 
-# Acionador manual
+# Define o gatilho (trigger) do workflow.
+# workflow_dispatch permite que você inicie este workflow manualmente pela interface do GitHub.
 on:
   workflow_dispatch:
 
+# Define os trabalhos (jobs) a serem executados.
 jobs:
+  # Nome do nosso job. Pode ser qualquer nome.
   upload-video:
+    # A máquina virtual onde o job será executado. 'ubuntu-latest' é a padrão e recomendada.
     runs-on: ubuntu-latest
 
+    # A sequência de passos que o job irá executar.
     steps:
-      # 1. Baixa o código e os vídeos do seu repositório
+      # Passo 1: Baixa uma cópia do seu repositório para a máquina virtual.
+      # Essencial para ter acesso ao seu arquivo de vídeo (ex: video_teste.mp4).
       - name: Checkout do código
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # 2. Configura o ambiente Python
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      # Passo 2: Configura o ambiente Python na máquina virtual.
+      - name: Configurar Python
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      # 3. Instala a biblioteca tiktok-uploader
-      - name: Instalar tiktok-uploader
+      # Passo 3: Instala a biblioteca necessária para fazer o upload.
+      - name: Instalar a biblioteca tiktok-uploader
         run: pip install tiktok-uploader
 
-      # 4. Publica o vídeo usando a biblioteca e o cookie
+      # Passo 4: Executa o processo de upload.
       - name: Publicar no TikTok
-        run: tiktok-uploader -v video_teste.mp4 -d "Meu primeiro vídeo postado via GitHub Actions! 🤖" --cookies "${{ secrets.TIKTOK_COOKIE }}"
+        run: |
+          # Cria um arquivo temporário 'cookies.txt' com o conteúdo do seu segredo.
+          # Esta é a forma mais segura e estável de passar as credenciais para a biblioteca.
+          echo "${{ secrets.TIKTOK_COOKIE }}" > cookies.txt
+
+          # Executa o comando de upload, passando o arquivo de vídeo, a legenda
+          # e o arquivo de cookies para autenticação.
+          tiktok-uploader -v video_teste.mp4 -d "Meu primeiro vídeo postado via GitHub Actions! 🤖" --cookies cookies.txt
